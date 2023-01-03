@@ -34,10 +34,6 @@ import (
 	"github.com/trivago/tgo/tcontainer"
 )
 
-const (
-	jiraHashLabel = "Jiralert-checksum"
-)
-
 // TODO(bwplotka): Consider renaming this package to ticketer.
 
 type jiraIssueService interface {
@@ -63,17 +59,6 @@ type Receiver struct {
 // NewReceiver creates a Receiver using the provided configuration, template and jiraIssueService.
 func NewReceiver(logger log.Logger, c *config.ReceiverConfig, t *template.Template, client jiraIssueService) *Receiver {
 	return &Receiver{logger: logger, conf: c, tmpl: t, client: client, timeNow: time.Now}
-}
-
-func toChecksumTicketLabel(labels []string) string {
-
-	h := sha1.New()
-
-	for _, label := range labels {
-		_, _ = h.Write([]byte(label))
-	}
-
-	return fmt.Sprintf("%s=%x", jiraHashLabel, h.Sum(nil))
 }
 
 // Notify manages JIRA issues based on alertmanager webhook notify message.
