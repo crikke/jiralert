@@ -15,7 +15,6 @@ package notify
 
 import (
 	"bytes"
-	"crypto/sha1"
 	"crypto/sha512"
 	"fmt"
 	"io"
@@ -63,17 +62,6 @@ type Receiver struct {
 // NewReceiver creates a Receiver using the provided configuration, template and jiraIssueService.
 func NewReceiver(logger log.Logger, c *config.ReceiverConfig, t *template.Template, client jiraIssueService) *Receiver {
 	return &Receiver{logger: logger, conf: c, tmpl: t, client: client, timeNow: time.Now}
-}
-
-func toChecksumTicketLabel(labels []string) string {
-
-	h := sha1.New()
-
-	for _, label := range labels {
-		_, _ = h.Write([]byte(label))
-	}
-
-	return fmt.Sprintf("%s=%x", jiraHashLabel, h.Sum(nil))
 }
 
 // Notify manages JIRA issues based on alertmanager webhook notify message.
