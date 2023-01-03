@@ -33,10 +33,6 @@ import (
 	"github.com/trivago/tgo/tcontainer"
 )
 
-const (
-	jiraHashLabel = "Jiralert-checksum"
-)
-
 // TODO(bwplotka): Consider renaming this package to ticketer.
 
 type jiraIssueService interface {
