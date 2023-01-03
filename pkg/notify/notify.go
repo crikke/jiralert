@@ -15,6 +15,7 @@ package notify
 
 import (
 	"bytes"
+	"crypto/sha1"
 	"crypto/sha512"
 	"fmt"
 	"io"
@@ -31,6 +32,10 @@ import (
 	"github.com/prometheus-community/jiralert/pkg/config"
 	"github.com/prometheus-community/jiralert/pkg/template"
 	"github.com/trivago/tgo/tcontainer"
+)
+
+const (
+	jiraHashLabel = "Jiralert-checksum"
 )
 
 // TODO(bwplotka): Consider renaming this package to ticketer.
@@ -60,6 +65,17 @@ func NewReceiver(logger log.Logger, c *config.ReceiverConfig, t *template.Templa
 	return &Receiver{logger: logger, conf: c, tmpl: t, client: client, timeNow: time.Now}
 }
 
+func toChecksumTicketLabel(labels []string) string {
+
+	h := sha1.New()
+
+	for _, label := range labels {
+		_, _ = h.Write([]byte(label))
+	}
+
+	return fmt.Sprintf("%s=%x", jiraHashLabel, h.Sum(nil))
+}
+
 // Notify manages JIRA issues based on alertmanager webhook notify message.
 func (r *Receiver) Notify(data *alertmanager.Data, hashJiraLabel bool) (bool, error) {
 	project, err := r.tmpl.Execute(r.conf.Project, data)
@@ -73,9 +89,20 @@ func (r *Receiver) Notify(data *alertmanager.Data, hashJiraLabel bool) (bool, er
 		for _, pair := range data.CommonLabels.SortedPairs() {
 			labels = append(labels, fmt.Sprintf("%s=%q", pair.Name, pair.Value))
 		}
+
+	}
+	groupTicketLabel := alertmanager.KV{}
+
+	for k, v := range data.GroupLabels {
+		groupTicketLabel[k] = v
 	}
 
-	labels = append(labels, toGroupTicketLabel(data.GroupLabels, hashJiraLabel))
+	for k, v := range r.conf.AdditionalIssueLabels {
+		groupTicketLabel[k] = v
+	}
+
+	labels = append(labels, toGroupTicketLabel(groupTicketLabel, hashJiraLabel))
+
 	issue, retry, err := r.findIssueToReuse(project, labels[len(labels)-1])
 	if err != nil {
 		return retry, err

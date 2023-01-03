@@ -149,6 +149,11 @@ type ReceiverConfig struct {
 	AddGroupLabels  bool `yaml:"add_group_labels" json:"add_group_labels"`
 	AddCommonLabels bool `yaml:"add_common_labels" json:"add_common_labels"`
 
+	// AdditionalIssueLabels is used to append labels used when searching for existing issues.
+	// Default it that only groupLabels are appended but when multiple enviroments exists AdditionalIssueLabels
+	// is used to separate the enviroments to multiple issues
+	AdditionalIssueLabels map[string]string `yaml:"additional_labels,omitempty" json:"additional_labels,omitempty"`
+
 	// Flag to auto-resolve opened issue when the alert is resolved.
 	AutoResolve *AutoResolve `yaml:"auto_resolve" json:"auto_resolve"`
 
