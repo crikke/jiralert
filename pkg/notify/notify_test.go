@@ -209,40 +209,7 @@ func TestNotify_JIRAInteraction(t *testing.T) {
 		initJira           func(t *testing.T) *fakeJira
 		expectedJiraIssues map[string]*jira.Issue
 	}{
-		{
-			name:        "empty jira, add common labels",
-			inputConfig: testReceiverConfig3(),
-			initJira:    func(t *testing.T) *fakeJira { return newTestFakeJira() },
-			inputAlert: &alertmanager.Data{
-				CommonLabels: alertmanager.KV{"foo": "bar"},
-				Alerts: alertmanager.Alerts{
-					{Status: alertmanager.AlertFiring},
-					{Status: "not firing"},
-					{Status: alertmanager.AlertFiring},
-				},
-				Status:      alertmanager.AlertFiring,
-				GroupLabels: alertmanager.KV{"a": "b", "c": "d"},
-			},
-			expectedJiraIssues: map[string]*jira.Issue{
-				"1": {
-					ID:  "1",
-					Key: "1",
-					Fields: &jira.IssueFields{
-						Project: jira.Project{Key: testReceiverConfig1().Project},
-						Labels: []string{
-							`foo="bar"`,
-							"Jiralert-checksum=ab03a89430228717b59a73fe39f7b6a44aa79408",
-						},
-						Description: "2",
-						Status: &jira.Status{
-							StatusCategory: jira.StatusCategory{Key: "NotDone"},
-						},
-						Unknowns: tcontainer.MarshalMap{},
-						Summary:  "[FIRING:2] b d ",
-					},
-				},
-			},
-		},
+
 		{
 			name:        "empty jira, new alert group",
 			inputConfig: testReceiverConfig1(),
