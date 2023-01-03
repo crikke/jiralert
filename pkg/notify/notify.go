@@ -15,7 +15,6 @@ package notify
 
 import (
 	"bytes"
-	"crypto/sha1"
 	"crypto/sha512"
 	"fmt"
 	"io"
