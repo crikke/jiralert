@@ -173,18 +173,6 @@ func testReceiverConfig2() *config.ReceiverConfig {
 		WontFixResolution: "won't-fix",
 	}
 }
-func testReceiverConfig3() *config.ReceiverConfig {
-	reopen := config.Duration(1 * time.Hour)
-	return &config.ReceiverConfig{
-		Project:           "abc",
-		Summary:           `[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .GroupLabels.SortedPairs.Values | join " " }} {{ if gt (len .CommonLabels) (len .GroupLabels) }}({{ with .CommonLabels.Remove .GroupLabels.Names }}{{ .Values | join " " }}{{ end }}){{ end }}`,
-		ReopenDuration:    &reopen,
-		ReopenState:       "reopened",
-		Description:       `{{ .Alerts.Firing | len }}`,
-		WontFixResolution: "won't-fix",
-		AddCommonLabels:   true,
-	}
-}
 
 func testReceiverConfigAutoResolve() *config.ReceiverConfig {
 	reopen := config.Duration(1 * time.Hour)
