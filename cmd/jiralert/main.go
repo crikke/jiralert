@@ -72,6 +72,7 @@ func main() {
 
 	config, _, err := config.LoadFile(*configFile, logger)
 	if err != nil {
+		level.Error(logger).Log("config", config)
 		level.Error(logger).Log("msg", "error loading configuration", "path", *configFile, "err", err)
 		os.Exit(1)
 	}

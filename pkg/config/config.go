@@ -120,15 +120,13 @@ type AutoResolve struct {
 	State string `yaml:"state" json:"state"`
 }
 
-type IssueType string
-
 const (
 	// AlertGroup groups issues in jira by alertmanager group.
-	AlertGroup IssueType = "AlertGroup"
+	AlertGroup = "AlertGroup"
 	// AlertRule groups issues in jira by the alertmanager AlertRule
-	AlertRule IssueType = "AlertRule"
+	AlertRule = "AlertRule"
 	// Alert does not group firing alerts. Each firing alert will create its own issue in jira.
-	Alert IssueType = "Alert"
+	Alert = "Alert"
 )
 
 // ReceiverConfig is the configuration for one receiver. It has a unique name and includes API access fields (url and
@@ -150,7 +148,7 @@ type ReceiverConfig struct {
 	ReopenDuration *Duration `yaml:"reopen_duration" json:"reopen_duration"`
 
 	// Optional issue fields
-	GroupIssueBy         IssueType              `yaml:"group_issue_by" json:"group_issue_by"`
+	GroupIssueBy         string                 `yaml:"group_issue_by" json:"group_issue_by"`
 	IssueIdentifierLabel string                 `yaml:"issue_identifier_label" json:"issue_identifier_label"`
 	Priority             string                 `yaml:"priority" json:"priority"`
 	Description          string                 `yaml:"description" json:"description"`
@@ -184,6 +182,7 @@ func (rc *ReceiverConfig) UnmarshalYAML(unmarshal func(interface{}) error) error
 		return err
 	}
 	rc.Fields = fieldsWithStringKeys
+	level.Error(rc).Log("rc", rc)
 	return checkOverflow(rc.XXX, "receiver")
 }
 
