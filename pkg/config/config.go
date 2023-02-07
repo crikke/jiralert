@@ -182,7 +182,6 @@ func (rc *ReceiverConfig) UnmarshalYAML(unmarshal func(interface{}) error) error
 		return err
 	}
 	rc.Fields = fieldsWithStringKeys
-	level.Error(rc).Log("rc", rc)
 	return checkOverflow(rc.XXX, "receiver")
 }
 
