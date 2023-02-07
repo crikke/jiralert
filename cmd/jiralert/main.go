@@ -72,8 +72,8 @@ func main() {
 
 	config, _, err := config.LoadFile(*configFile, logger)
 	if err != nil {
-		level.Error(logger).Log("config", config)
-		level.Error(logger).Log("msg", "error loading configuration", "path", *configFile, "err", err)
+		level.Error(logger).Log("config", config, "foo", config.Defaults.GroupIssueBy, "bar", config.Defaults.IssueIdentifierLabel)
+		level.Error(logger).Log("msg", "error loading aodnaa", "path", *configFile, "err", err)
 		os.Exit(1)
 	}
 
