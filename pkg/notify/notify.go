@@ -105,7 +105,7 @@ func (r *Receiver) toAlertRule(d *alertmanager.Data) []alertmanager.Data {
 			}
 		}
 
-		data.Alerts = append(alertsData[name].Alerts, alert)
+		data.Alerts = append(data.Alerts, alert)
 
 		if alert.Status == alertmanager.AlertFiring {
 			data.Status = alertmanager.AlertFiring
