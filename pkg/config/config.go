@@ -120,6 +120,17 @@ type AutoResolve struct {
 	State string `yaml:"state" json:"state"`
 }
 
+type IssueType string
+
+const (
+	// AlertGroup groups issues in jira by alertmanager group.
+	AlertGroup IssueType = "AlertGroup"
+	// AlertRule groups issues in jira by the alertmanager AlertRule
+	AlertRule IssueType = "AlertRule"
+	// Alert does not group firing alerts. Each firing alert will create its own issue in jira.
+	Alert IssueType = "Alert"
+)
+
 // ReceiverConfig is the configuration for one receiver. It has a unique name and includes API access fields (url and
 // auth) and issue fields (required -- e.g. project, issue type -- and optional -- e.g. priority).
 type ReceiverConfig struct {
@@ -139,19 +150,18 @@ type ReceiverConfig struct {
 	ReopenDuration *Duration `yaml:"reopen_duration" json:"reopen_duration"`
 
 	// Optional issue fields
-	Priority          string                 `yaml:"priority" json:"priority"`
-	Description       string                 `yaml:"description" json:"description"`
-	WontFixResolution string                 `yaml:"wont_fix_resolution" json:"wont_fix_resolution"`
-	Fields            map[string]interface{} `yaml:"fields" json:"fields"`
-	Components        []string               `yaml:"components" json:"components"`
+	GroupIssueBy         IssueType              `yaml:"group_issue_by" json:"group_issue_by"`
+	IssueIdentifierLabel string                 `yaml:"issue_identifier_label" json:"issue_identifier_label"`
+	Priority             string                 `yaml:"priority" json:"priority"`
+	Description          string                 `yaml:"description" json:"description"`
+	WontFixResolution    string                 `yaml:"wont_fix_resolution" json:"wont_fix_resolution"`
+	Fields               map[string]interface{} `yaml:"fields" json:"fields"`
+	Components           []string               `yaml:"components" json:"components"`
 
 	// Label copy settings
 	AddGroupLabels  bool `yaml:"add_group_labels" json:"add_group_labels"`
 	AddCommonLabels bool `yaml:"add_common_labels" json:"add_common_labels"`
 
-	// AdditionalIssueLabels is used to append labels used when searching for existing issues.
-	// Default it that only groupLabels are appended but when multiple enviroments exists AdditionalIssueLabels
-	// is used to separate the enviroments to multiple issues
 	AdditionalIssueLabels map[string]string `yaml:"additional_labels,omitempty" json:"additional_labels,omitempty"`
 
 	// Flag to auto-resolve opened issue when the alert is resolved.
