@@ -98,10 +98,13 @@ func (r *Receiver) toAlertRule(d *alertmanager.Data) []alertmanager.Data {
 		data, ok := alertsData[name]
 		if !ok {
 			data = alertmanager.Data{
-				GroupKey:    d.GroupKey,
-				GroupLabels: d.GroupLabels,
-				Status:      alertmanager.AlertResolved,
-				ExternalURL: d.ExternalURL,
+				GroupKey:          d.GroupKey,
+				GroupLabels:       d.GroupLabels,
+				Status:            alertmanager.AlertResolved,
+				ExternalURL:       d.ExternalURL,
+				Alerts:            make(alertmanager.Alerts, 0),
+				CommonAnnotations: make(alertmanager.KV),
+				CommonLabels:      make(alertmanager.KV),
 			}
 		}
 
