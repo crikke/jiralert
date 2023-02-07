@@ -156,6 +156,8 @@ func (r *Receiver) toAlertRule(d *alertmanager.Data) []alertmanager.Data {
 func (r *Receiver) Notify(data *alertmanager.Data, hashJiraLabel bool) (bool, error) {
 
 	var slice []alertmanager.Data
+	level.Info(r.logger).Log("groupIssueBy", r.conf.GroupIssueBy)
+	level.Info(r.logger).Log("conf", r.conf)
 	switch r.conf.GroupIssueBy {
 	// by default alerts are already grouped by group, so no transformation is needed here
 	case config.AlertGroup:

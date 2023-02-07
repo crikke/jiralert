@@ -122,11 +122,11 @@ type AutoResolve struct {
 
 const (
 	// AlertGroup groups issues in jira by alertmanager group.
-	AlertGroup = "AlertGroup"
+	AlertGroup string = "AlertGroup"
 	// AlertRule groups issues in jira by the alertmanager AlertRule
-	AlertRule = "AlertRule"
+	AlertRule string = "AlertRule"
 	// Alert does not group firing alerts. Each firing alert will create its own issue in jira.
-	Alert = "Alert"
+	Alert string = "Alert"
 )
 
 // ReceiverConfig is the configuration for one receiver. It has a unique name and includes API access fields (url and
