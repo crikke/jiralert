@@ -159,11 +159,9 @@ func (r *Receiver) toAlertRule(d *alertmanager.Data) []alertmanager.Data {
 func (r *Receiver) Notify(data *alertmanager.Data, hashJiraLabel bool) (bool, error) {
 
 	var slice []alertmanager.Data
-	level.Info(r.logger).Log("groupIssueBy", r.conf.GroupIssueBy)
-	level.Info(r.logger).Log("conf", r.conf)
 	switch r.conf.GroupIssueBy {
-	// by default alerts are already grouped by group, so no transformation is needed here
-	case config.AlertGroup:
+	// by default alerts are already grouped by AlertGroup, so no transformation is needed here
+	case config.AlertGroup, "":
 		slice = []alertmanager.Data{*data}
 	case config.AlertRule:
 		slice = r.toAlertRule(data)
@@ -174,8 +172,6 @@ func (r *Receiver) Notify(data *alertmanager.Data, hashJiraLabel bool) (bool, er
 	for _, d := range slice {
 		retry, err := r.notify(&d, hashJiraLabel)
 		if err != nil {
-			level.Error(r.logger).Log("err", err)
-
 			return retry, err
 		}
 	}

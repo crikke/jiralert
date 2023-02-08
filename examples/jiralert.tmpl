@@ -9,4 +9,4 @@ Annotations:
 Source: {{ .GeneratorURL }}
 {{ end }}{{ end }}
 
-{{ define "jira.issueLabel" }} alert={{- .CommonLabels["alertname"] }},env={{- .CommonLabels["env"] }}{{- end -}}
+{{ define "jira.issueLabel" }} alert={{- index .CommonLabels "alertname" }}{{- end -}}

@@ -226,6 +226,10 @@ func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		}
 	}
 
+	if c.Defaults.GroupIssueBy == "" {
+		c.Defaults.GroupIssueBy = AlertGroup
+	}
+
 	for _, rc := range c.Receivers {
 		if rc.Name == "" {
 			return fmt.Errorf("missing name for receiver %+v", rc)
@@ -297,6 +301,18 @@ func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		}
 
 		// Populate optional issue fields, where necessary.
+		if rc.GroupIssueBy == "" && c.Defaults.GroupIssueBy != "" {
+			rc.GroupIssueBy = c.Defaults.GroupIssueBy
+		}
+
+		// validate that GroupIssueBy is either Alert/AlertRule/AlertGroup
+		if rc.GroupIssueBy != Alert && rc.GroupIssueBy != AlertRule && rc.GroupIssueBy != AlertGroup {
+			return fmt.Errorf("bad config in receiver %q, 'group_issue_by' must be either Alert/AlertRule/AlertGroup", rc.Name)
+		}
+		if rc.IssueIdentifierLabel == "" && c.Defaults.IssueIdentifierLabel != "" {
+			rc.IssueIdentifierLabel = c.Defaults.IssueIdentifierLabel
+		}
+
 		if rc.Priority == "" && c.Defaults.Priority != "" {
 			rc.Priority = c.Defaults.Priority
 		}
